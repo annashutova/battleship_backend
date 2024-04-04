@@ -11,7 +11,9 @@ class Settings(BaseSettings):
     REDIS_HOST: str
     REDIS_PORT: int
     REDIS_PASSWORD: str
-    REDIS_SIRIUS_CACHE_PREFIX: str = 'sirius'
+    REDIS_BATTLESHIP_CACHE_PREFIX: str = 'battleship'
+
+    LOG_LEVEL: str = 'debug'
 
 
 settings = Settings()

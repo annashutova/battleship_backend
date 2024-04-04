@@ -5,11 +5,19 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from webapp.api.login.router import auth_router
+from webapp.api.game.router import game_router
 from webapp.metrics.metrics import MetricsMiddleware, metrics
+from webapp.middleware.logger import LogServerMiddleware
+from webapp.on_startup.logger import setup_logger
 from webapp.on_startup.redis import start_redis
 
 
 def setup_middleware(app: FastAPI) -> None:
+    app.add_middleware(
+        LogServerMiddleware,
+    )
+
+    # CORS Middleware should be the last.
     app.add_middleware(
         CORSMiddleware, allow_origins=['*'], allow_credentials=True, allow_methods=['*'], allow_headers=['*']
     )
@@ -21,6 +29,7 @@ def setup_routers(app: FastAPI) -> None:
 
     routers = [
         auth_router,
+        game_router,
     ]
 
     for router in routers:
@@ -29,6 +38,7 @@ def setup_routers(app: FastAPI) -> None:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    setup_logger()
     await start_redis()
     print('START APP')
     yield

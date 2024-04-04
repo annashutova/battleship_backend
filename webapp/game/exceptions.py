@@ -73,3 +73,7 @@ class StartedOrFinishedError(Exception):
 
 class PlayerDoesNotExist(Exception):
     pass
+
+
+class ShipHPError(Exception):
+    pass
