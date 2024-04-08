@@ -10,7 +10,7 @@ from webapp.metrics.metrics import INTEGRATIONS_LATENCY
 @INTEGRATIONS_LATENCY.time()
 async def redis_set(model: str, user_id: int, data: Any) -> None:
     redis = get_redis()
-    key = await get_cache_key(model, user_id)
+    key = get_cache_key(model, user_id)
     print(key)
     await redis.set(key, orjson.dumps(data))
 
@@ -18,7 +18,7 @@ async def redis_set(model: str, user_id: int, data: Any) -> None:
 @INTEGRATIONS_LATENCY.time()
 async def redis_get(model: str, user_id: int) -> Any:
     redis = get_redis()
-    key = await get_cache_key(model, user_id)
+    key = get_cache_key(model, user_id)
     print(key)
     cached = await redis.get(key)
 
@@ -31,5 +31,5 @@ async def redis_get(model: str, user_id: int) -> Any:
 @INTEGRATIONS_LATENCY.time()
 async def redis_remove(model: str, user_id: int) -> None:
     redis = get_redis()
-    key = await get_cache_key(model, user_id)
+    key = get_cache_key(model, user_id)
     await redis.delete(key)
