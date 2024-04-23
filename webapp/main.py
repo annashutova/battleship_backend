@@ -4,10 +4,11 @@ from typing import AsyncIterator
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from webapp.api.login.router import auth_router
 from webapp.api.game.router import game_router
-from webapp.metrics.metrics import MetricsMiddleware, metrics
+from webapp.api.login.router import auth_router
+from webapp.api.stats.router import stats_router
 from webapp.middleware.logger import LogServerMiddleware
+from webapp.middleware.metrics import MetricsMiddleware, metrics
 from webapp.on_startup.logger import setup_logger
 from webapp.on_startup.redis import start_redis
 
@@ -30,6 +31,7 @@ def setup_routers(app: FastAPI) -> None:
     routers = [
         auth_router,
         game_router,
+        stats_router,
     ]
 
     for router in routers:

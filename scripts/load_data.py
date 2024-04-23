@@ -25,12 +25,10 @@ async def main(fixtures: List[str]) -> None:
         with open(fixture_path, 'r') as file:
             values = json.load(file)
 
-        # Convert birthdate strings to datetime.date objects
+        # Convert timestamp strings datetime objects
         for value in values:
-            if 'birthdate' in value:
-                value['birthdate'] = datetime.strptime(value['birthdate'], '%Y-%m-%d').date()
-            if 'class_date' in value:
-                value['class_date'] = datetime.strptime(value['class_date'], '%Y-%m-%d').date()
+            if 'timestamp' in value:
+                value['timestamp'] = datetime.strptime(value['timestamp'], '%Y-%m-%d %H:%M:%S.%f')
 
         async with async_session() as session:
             await session.execute(insert(model).values(values))

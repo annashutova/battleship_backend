@@ -18,7 +18,7 @@ services:
       web_db:
         condition: service_healthy
     networks:
-      - sirius_network
+      - battleship-network
 
   web_db:
     container_name: web_db
@@ -37,7 +37,7 @@ services:
     volumes:
       - ./scripts/postgres:/docker-entrypoint-initdb.d
     networks:
-      - sirius_network
+      - battleship-network
 
   redis:
     container_name: redis
@@ -45,7 +45,7 @@ services:
     ports:
       - "6379:6379"
     networks:
-      - sirius_network
+      - battleship-network
 
 #   prometheus:
 #     image: prom/prometheus
@@ -80,5 +80,5 @@ services:
 #   prom_data:
 
 networks:
-  sirius_network:
-    external: True
+  battleship-network:
+    driver: bridge
