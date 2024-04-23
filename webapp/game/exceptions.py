@@ -1,4 +1,4 @@
-from typing import Any, Tuple
+from typing import Any, List, Tuple
 
 
 class SquareStateError(Exception):
@@ -10,14 +10,16 @@ class BaseError(Exception):
         self.message = message
         self.span = span
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'{self.message}: {self.span}'
 
 
 class NotValidChoiceError(BaseError):
     """Exception raised if the provided value is not in range of given choices"""
 
-    def __init__(self, span: list = [0, 1, 2, 3], message: str = 'The given value is not in range of given choices'):
+    def __init__(
+        self, span: List[int] = [0, 1, 2, 3], message: str = 'The given value is not in range of given choices'
+    ):
         super().__init__(span, message)
 
 
@@ -31,7 +33,7 @@ class CordinatesValidationError(BaseError):
 class ShipLengthError(BaseError):
     """Exception raised if given length is not appropriate"""
 
-    def __init__(self, span: range = (2, 5), message: str = 'The given length is not appropriate'):
+    def __init__(self, span: range = range(1, 4), message: str = 'The given length is not appropriate'):
         super().__init__(span, message)
 
 
@@ -59,7 +61,9 @@ class SquareStrikedError(Exception):
 class GameConditionError(Exception):
     """Exception raised if the provoked action cannot be done when the game has started or finished"""
 
-    def __init__(self, message: str = 'Cannot do the selected action since the game has already been started or finished'):
+    def __init__(
+        self, message: str = 'Cannot do the selected action since the game has already been started or finished'
+    ):
         super().__init__(message)
 
 

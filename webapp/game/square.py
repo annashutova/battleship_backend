@@ -1,8 +1,11 @@
 from enum import Enum
-from pydantic import BaseModel, Field, validator
+from typing import Any, Tuple
+
+from pydantic import BaseModel, Field, field_serializer, validator
 
 from webapp.game.exceptions import NotValidChoiceError
 from webapp.game.ship import Ship
+
 
 class SquareStatus(Enum):
     EMPTY = 0
@@ -19,43 +22,20 @@ class Square(BaseModel):
     state: SquareStatus = Field(default=SquareStatus.EMPTY)
     ship: Ship | None = Field(default=None)
 
+    @field_serializer('ship')
+    def serialize_ship(self, ship: Ship | None, _info: Any) -> None:
+        return None
+
     @validator("state")
-    def validate_state(cls, value):
+    def validate_state(cls, value: Any) -> int:
         if value not in SquareStatus:
-            raise NotValidChoiceError("Invalid SquareStatus value")
+            raise NotValidChoiceError(message="Invalid SquareStatus value")
         return value
-    
+
     @property
-    def cord(self):
-        return (self.x, self.y)
-    
+    def cord(self) -> Tuple[int, int]:
+        return self.x, self.y
+
     def place_ship(self, ship: Ship) -> None:
         self.ship = ship
         self.state = SquareStatus.SHIP
-
-
-# class Square:
-#     def __init__(self, x, y, state=SquareStatus.EMPTY):
-#         self.state = state
-#         self.x = x
-#         self.y = y
-#         self.ship = None
-
-#     @property
-#     def state(self):
-#         return self._state
-
-#     @state.setter
-#     def state(self, value):
-#         SquareStatus.validate(value)
-#         self._state = value
-
-#     @property
-#     def cord(self):
-#         return (self.x, self.y)
-
-#     def __str__(self):
-#         return SquareStatus(self.state).name  # 'eg. "EMPTY"'
-
-#     def __repr__(self):
-#         return f"({self.x}, {self.y}), STATE: {SquareStatus(self.state).name}"
