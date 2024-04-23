@@ -3,7 +3,7 @@ from fastapi.responses import ORJSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from webapp.api.login.router import auth_router
-from webapp.crud.user import get_user, create_user
+from webapp.crud.user import create_user, get_user
 from webapp.db.postgres import get_session
 from webapp.schema.user import UserInfo, UserLoginResponse
 from webapp.utils.auth.jwt import jwt_auth

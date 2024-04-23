@@ -3,13 +3,11 @@ from fastapi.responses import ORJSONResponse
 from starlette import status
 
 from webapp.api.game.router import game_router
-from webapp.utils.auth.jwt import jwt_auth, JwtTokenT
-
-from webapp.game.core import Player, BattleShipGame
-from webapp.game.board import Board
-from webapp.game.square import Square
-
 from webapp.cache.cache import redis_set
+from webapp.game.board import Board
+from webapp.game.core import BattleShipGame, Player
+from webapp.game.square import Square
+from webapp.utils.auth.jwt import JwtTokenT, jwt_auth
 
 
 @game_router.post('/create_game')
@@ -32,14 +30,11 @@ async def create_game(
 
     game = BattleShipGame(player=player, ai=ai, turn=player)
 
-    # setup ships for ai
+    # setup ships for AI
     try:
         game.setup_random_ships(ai)
     except Exception as exc:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(exc)
-        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
 
     await redis_set(BattleShipGame.__name__, user_id, game.model_dump())
 
