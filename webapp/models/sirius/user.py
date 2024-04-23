@@ -1,8 +1,7 @@
-from sqlalchemy import Integer, BigInteger
+from sqlalchemy import BigInteger, Integer
 from sqlalchemy.orm import Mapped, mapped_column
 
 from webapp.models.meta import Base
-
 
 
 class User(Base):

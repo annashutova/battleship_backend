@@ -1,4 +1,5 @@
-from typing import List, Tuple
+from typing import Tuple
+
 from pydantic import BaseModel
 
 
