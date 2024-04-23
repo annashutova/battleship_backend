@@ -1,13 +1,12 @@
-from sqlalchemy import select
+from sqlalchemy import insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import insert
 
-from webapp.metrics.metrics import INTEGRATIONS_LATENCY
+from webapp.middleware.metrics import integration_latency
 from webapp.models.sirius.user import User
 from webapp.schema.user import UserInfo
 
 
-@INTEGRATIONS_LATENCY.time()
+@integration_latency
 async def get_user(session: AsyncSession, user_info: UserInfo) -> User | None:
     return (
         await session.scalars(
@@ -17,7 +16,8 @@ async def get_user(session: AsyncSession, user_info: UserInfo) -> User | None:
         )
     ).one_or_none()
 
-@INTEGRATIONS_LATENCY.time()
+
+@integration_latency
 async def get_user_by_id(session: AsyncSession, user_id: int) -> User | None:
     return (
         await session.scalars(
@@ -27,7 +27,8 @@ async def get_user_by_id(session: AsyncSession, user_id: int) -> User | None:
         )
     ).one_or_none()
 
-@INTEGRATIONS_LATENCY.time()
+
+@integration_latency
 async def create_user(session: AsyncSession, user_info: UserInfo) -> User | None:
     async with session.begin_nested():
         query = insert(User).values(user_info.model_dump())
