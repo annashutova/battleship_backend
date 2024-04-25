@@ -6,10 +6,14 @@ from fastapi.responses import ORJSONResponse
 from webapp.api.game.router import game_router
 from webapp.cache.get_game import get_game_by_user
 from webapp.game.core import BattleShipGame
+from webapp.schema.ship import GetAIBoardResponse, GetPlayerBoardResponse
 
 
-@game_router.get('/opponent_board')
-async def get_player_board(
+@game_router.get(
+    '/opponent_board',
+    response_model=GetAIBoardResponse,
+)
+async def get_opponent_board(
     game: BattleShipGame = Depends(get_game_by_user),
 ) -> ORJSONResponse:
     player = game.player
@@ -23,8 +27,11 @@ async def get_player_board(
     )
 
 
-@game_router.get('/player_board')
-async def get_opponent_board(
+@game_router.get(
+    '/player_board',
+    response_model=GetPlayerBoardResponse,
+)
+async def get_player_board(
     game: BattleShipGame = Depends(get_game_by_user),
 ) -> ORJSONResponse:
     board = game.player_map()

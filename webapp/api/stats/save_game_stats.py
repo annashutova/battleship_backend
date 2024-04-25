@@ -8,9 +8,13 @@ from webapp.cache.get_game import get_game_by_user
 from webapp.crud.stats import save_game_data
 from webapp.db.postgres import get_session
 from webapp.game.core import BattleShipGame
+from webapp.schema.stats import SaveDataResponse
 
 
-@stats_router.post('/save_data')
+@stats_router.post(
+    '/save_data',
+    response_model=SaveDataResponse,
+)
 async def save_data(
     session: AsyncSession = Depends(get_session),
     game: BattleShipGame = Depends(get_game_by_user),

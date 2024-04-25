@@ -7,10 +7,14 @@ from webapp.cache.cache import redis_set
 from webapp.game.board import Board
 from webapp.game.core import BattleShipGame, Player
 from webapp.game.square import Square
+from webapp.schema.game import CreatGameResponse
 from webapp.utils.auth.jwt import JwtTokenT, jwt_auth
 
 
-@game_router.post('/create_game')
+@game_router.post(
+    '/create_game',
+    response_model=CreatGameResponse,
+)
 async def create_game(
     access_token: JwtTokenT = Depends(jwt_auth.validate_token),
 ) -> ORJSONResponse:

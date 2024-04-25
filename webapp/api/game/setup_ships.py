@@ -8,10 +8,14 @@ from webapp.api.game.router import game_router
 from webapp.cache.cache import redis_set
 from webapp.cache.get_game import get_game_by_user
 from webapp.game.core import BattleShipGame
-from webapp.schema.ship import PlaceShip
+from webapp.schema.game import SetupRulesResponse
+from webapp.schema.ship import CreateRandomShipsResponse, CreateShipResponse, PlaceShip
 
 
-@game_router.post('/setup_rules')
+@game_router.get(
+    '/setup_rules',
+    response_model=SetupRulesResponse,
+)
 async def get_setup_rules(
     game: BattleShipGame = Depends(get_game_by_user),
 ) -> ORJSONResponse:
@@ -22,7 +26,10 @@ async def get_setup_rules(
     )
 
 
-@game_router.post('/create_random_ships')
+@game_router.post(
+    '/create_random_ships',
+    response_model=CreateRandomShipsResponse,
+)
 async def place_random_ships(
     game: BattleShipGame = Depends(get_game_by_user),
 ) -> ORJSONResponse:
@@ -46,7 +53,10 @@ async def place_random_ships(
     )
 
 
-@game_router.post('/create_ship')
+@game_router.post(
+    '/create_ship',
+    response_model=CreateShipResponse,
+)
 async def place_ship(
     body: PlaceShip,
     game: BattleShipGame = Depends(get_game_by_user),

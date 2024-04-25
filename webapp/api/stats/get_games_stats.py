@@ -8,10 +8,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from webapp.api.stats.router import stats_router
 from webapp.crud.stats import get_statistics
 from webapp.db.postgres import get_session
+from webapp.schema.stats import GetStatsResponse
 from webapp.utils.auth.jwt import JwtTokenT, jwt_auth
 
 
-@stats_router.get('/get_stats')
+@stats_router.get(
+    '/get_stats',
+    response_model=GetStatsResponse,
+)
 async def get_stats(
     period: int = 1,
     session: AsyncSession = Depends(get_session),

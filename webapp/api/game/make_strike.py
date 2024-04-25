@@ -8,10 +8,13 @@ from webapp.api.game.router import game_router
 from webapp.cache.cache import redis_set
 from webapp.cache.get_game import get_game_by_user
 from webapp.game.core import BattleShipGame, Player
-from webapp.schema.strike import StrikeCoord
+from webapp.schema.strike import AIStrikeResponse, PlayerStrikeResponse, StrikeCoord
 
 
-@game_router.post('/player_strike')
+@game_router.post(
+    '/player_strike',
+    response_model=PlayerStrikeResponse,
+)
 async def player_strike(
     body: StrikeCoord,
     game: BattleShipGame = Depends(get_game_by_user),
@@ -36,7 +39,10 @@ async def player_strike(
     )
 
 
-@game_router.post('/ai_strike')
+@game_router.post(
+    '/ai_strike',
+    response_model=AIStrikeResponse,
+)
 async def ai_strike(
     game: BattleShipGame = Depends(get_game_by_user),
 ) -> ORJSONResponse:
