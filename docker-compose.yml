@@ -47,37 +47,37 @@ services:
     networks:
       - battleship-network
 
-#   prometheus:
-#     image: prom/prometheus
-#     container_name: prometheus
-#     command:
-#       - "--config.file=/etc/prometheus/prometheus_config.yml"
-#     ports:
-#       - "9090:9090"
-#     restart: unless-stopped
-#     depends_on:
-#       - web
-#     volumes:
-#       - ./prometheus:/etc/prometheus
-#       - prom_data:/prometheus
-#     networks:
-#       - sirius_network
+  prometheus:
+   image: prom/prometheus
+   container_name: prometheus
+   command:
+     - "--config.file=/etc/prometheus/prometheus_config.yml"
+   ports:
+     - "9090:9090"
+   restart: unless-stopped
+   depends_on:
+     - web
+   volumes:
+     - ./prometheus:/etc/prometheus
+     - prom_data:/prometheus
+   networks:
+     - battleship-network
 
-#   grafana:
-#     image: grafana/grafana
-#     container_name: grafana
-#     ports:
-#       - "3000:3000"
-#     restart: unless-stopped
-#     volumes:
-#       - ./grafana:/etc/grafana/provisioning/datasources
-#     depends_on:
-#       - web
-#     networks:
-#       - sirius_network
+  grafana:
+   image: grafana/grafana
+   container_name: grafana
+   ports:
+     - "3000:3000"
+   restart: unless-stopped
+   volumes:
+     - ./grafana:/etc/grafana/provisioning/datasources
+   depends_on:
+     - web
+   networks:
+     - battleship-network
 
-# volumes:
-#   prom_data:
+volumes:
+ prom_data:
 
 networks:
   battleship-network:
