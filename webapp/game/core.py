@@ -182,20 +182,19 @@ class BattleShipGame(BaseModel):
             square.state = SquareStatus.MISSED
             self.change_turn()
             return HitStatus.MISS
-        else:
-            square.state = SquareStatus.HIT
-            if ship := square.ship:
-                ship.hit_ship()
+        square.state = SquareStatus.HIT
+        if ship := square.ship:
+            ship.hit_ship()
 
-                if board.is_finished():
-                    self.finished = True
-                    self.winner = self.turn
+            if board.is_finished():
+                self.finished = True
+                self.winner = self.turn
 
-                if ship.is_destroyed():
-                    board.mark_destroyed_ship(ship)
-                    return HitStatus.DESTROYED
+            if ship.is_destroyed():
+                board.mark_destroyed_ship(ship)
+                return HitStatus.DESTROYED
 
-            return HitStatus.HIT
+        return HitStatus.HIT
 
     def player_map(self) -> List[List[SquareStatus]]:
         """Returns a 2D array showing the player's board"""

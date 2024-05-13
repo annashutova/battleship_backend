@@ -21,7 +21,7 @@ async def get_game_by_user(access_token: JwtTokenT = Depends(jwt_auth.validate_t
         player_board = player.board.board
         for ship in player.board.ships:
             for coord in ship.coords:
-                x, y = coord
-                player_board[x][y].ship = ship
+                x_coord, y_coord = coord
+                player_board[x_coord][y_coord].ship = ship
 
     return game

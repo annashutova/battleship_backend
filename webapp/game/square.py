@@ -17,8 +17,8 @@ class SquareStatus(Enum):
 
 
 class Square(BaseModel):
-    x: int
-    y: int
+    x_coord: int
+    y_coord: int
     state: SquareStatus = Field(default=SquareStatus.EMPTY)
     ship: Ship | None = Field(default=None)
 
@@ -34,7 +34,7 @@ class Square(BaseModel):
 
     @property
     def cord(self) -> Tuple[int, int]:
-        return self.x, self.y
+        return self.x_coord, self.y_coord
 
     def place_ship(self, ship: Ship) -> None:
         self.ship = ship

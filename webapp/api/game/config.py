@@ -1,0 +1,1 @@
+CELLS_COUNT = 10

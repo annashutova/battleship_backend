@@ -2,6 +2,7 @@ from fastapi import Depends, HTTPException
 from fastapi.responses import ORJSONResponse
 from starlette import status
 
+from webapp.api.game.config import CELLS_COUNT
 from webapp.api.game.router import game_router
 from webapp.cache.cache import redis_set
 from webapp.game.board import Board
@@ -20,14 +21,13 @@ async def create_game(
 ) -> ORJSONResponse:
     user_id = access_token['user_id']
 
-    x = 10
-    player_squares = [[Square(x=i, y=j) for j in range(x)] for i in range(x)]
-    ai_squares = [[Square(x=i, y=j) for j in range(x)] for i in range(x)]
-    player_weight = [[1 for _ in range(x)] for _ in range(x)]
-    ai_weight = [[1 for _ in range(x)] for _ in range(x)]
+    player_squares = [[Square(x_coord=i, y_coord=j) for j in range(CELLS_COUNT)] for i in range(CELLS_COUNT)]
+    ai_squares = [[Square(x_coord=i, y_coord=j) for j in range(CELLS_COUNT)] for i in range(CELLS_COUNT)]
+    player_weight = [[1 for _ in range(CELLS_COUNT)] for _ in range(CELLS_COUNT)]
+    ai_weight = [[1 for _ in range(CELLS_COUNT)] for _ in range(CELLS_COUNT)]
 
-    player_board = Board(x=x, y=x, board=player_squares, weight=player_weight)
-    ai_board = Board(x=x, y=x, board=ai_squares, weight=ai_weight)
+    player_board = Board(lines_cnt=CELLS_COUNT, rows_cnt=CELLS_COUNT, board=player_squares, weight=player_weight)
+    ai_board = Board(lines_cnt=CELLS_COUNT, rows_cnt=CELLS_COUNT, board=ai_squares, weight=ai_weight)
 
     player = Player(user_id=user_id, is_ai=False, board=player_board)
     ai = Player(is_ai=True, board=ai_board)

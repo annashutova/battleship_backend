@@ -13,8 +13,8 @@ from webapp.game.square import Square, SquareStatus
 
 
 class Board(BaseModel):
-    x: int
-    y: int
+    lines_cnt: int
+    rows_cnt: int
     board: List[List[Square]]
     weight: List[List[int]]
     ships: List[Ship] = Field(default_factory=list)
@@ -60,8 +60,8 @@ class Board(BaseModel):
         weights = []
         max_weight = -1
 
-        for x in range(self.x):
-            for y in range(self.y):
+        for x in range(self.lines_cnt):
+            for y in range(self.rows_cnt):
                 if self.weight[x][y] > max_weight:
                     weights = [(x, y)]
                     max_weight = self.weight[x][y]
@@ -75,14 +75,14 @@ class Board(BaseModel):
         # Для начала мы выставляем всем клеткам 1.
         # нам не обязательно знать какой вес был у клетки в предыдущий раз:
         # эффект веса не накапливается от хода к ходу.
-        self.weight = [[1 for _ in range(self.y)] for _ in range(self.x)]
+        self.weight = [[1 for _ in range(self.rows_cnt)] for _ in range(self.lines_cnt)]
 
         # Пробегаем по всем полю.
         # Если находим раненый корабль - ставим клеткам выше ниже и по бокам
         # коэффициенты умноженые на 50 т.к. логично что корабль имеет продолжение в одну из сторон.
         # По диагоналям от раненой клетки ничего не может быть - туда вписываем нули
-        for x in range(self.x):
-            for y in range(self.y):
+        for x in range(self.lines_cnt):
+            for y in range(self.rows_cnt):
                 if opponent_map[x][y] == SquareStatus.HIT:
                     self.weight[x][y] = 0
 
@@ -90,19 +90,19 @@ class Board(BaseModel):
                         if y - 1 >= 0:
                             self.weight[x - 1][y - 1] = 0
                         self.weight[x - 1][y] *= 50
-                        if y + 1 < self.y:
+                        if y + 1 < self.rows_cnt:
                             self.weight[x - 1][y + 1] = 0
 
-                    if x + 1 < self.x:
+                    if x + 1 < self.lines_cnt:
                         if y - 1 >= 0:
                             self.weight[x + 1][y - 1] = 0
                         self.weight[x + 1][y] *= 50
-                        if y + 1 < self.y:
+                        if y + 1 < self.rows_cnt:
                             self.weight[x + 1][y + 1] = 0
 
                     if y - 1 >= 0:
                         self.weight[x][y - 1] *= 50
-                    if y + 1 < self.y:
+                    if y + 1 < self.rows_cnt:
                         self.weight[x][y + 1] *= 50
 
                 elif opponent_map[x][y] == SquareStatus.DESTROYED:
@@ -112,19 +112,19 @@ class Board(BaseModel):
                         if y - 1 >= 0:
                             self.weight[x - 1][y - 1] = 0
                         self.weight[x - 1][y] = 0
-                        if y + 1 < self.y:
+                        if y + 1 < self.rows_cnt:
                             self.weight[x - 1][y + 1] = 0
 
-                    if x + 1 < self.x:
+                    if x + 1 < self.lines_cnt:
                         if y - 1 >= 0:
                             self.weight[x + 1][y - 1] = 0
                         self.weight[x + 1][y] = 0
-                        if y + 1 < self.y:
+                        if y + 1 < self.rows_cnt:
                             self.weight[x + 1][y + 1] = 0
 
                     if y - 1 >= 0:
                         self.weight[x][y - 1] = 0
-                    if y + 1 < self.y:
+                    if y + 1 < self.rows_cnt:
                         self.weight[x][y + 1] = 0
 
                 elif opponent_map[x][y] == SquareStatus.MISSED:
@@ -144,16 +144,16 @@ class Board(BaseModel):
 
     def _validate_coordinate(self, coord: Tuple[int, int]) -> None:
         i, j = coord
-        if not 0 <= i <= self.x - 1 or not 0 <= j <= self.y - 1:
+        if not 0 <= i <= self.lines_cnt - 1 or not 0 <= j <= self.rows_cnt - 1:
             raise CordinatesValidationError()
 
     def _validate_empty_surrounding(self, coordinates: List[Tuple[int, int]]) -> None:
         for coord in coordinates:
             for x in range(coord[0] - 1, coord[0] + 2):
-                if not 0 <= x <= self.x - 1:
+                if not 0 <= x <= self.lines_cnt - 1:
                     continue
                 for y in range(coord[1] - 1, coord[1] + 2):
-                    if not 0 <= y <= self.y - 1:
+                    if not 0 <= y <= self.rows_cnt - 1:
                         continue
                     square = self.get_square((x, y))
                     if square.state != SquareStatus.EMPTY:
