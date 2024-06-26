@@ -2,12 +2,11 @@ version: '3.9'
 
 services:
   web:
-    container_name: web
     build:
       dockerfile: docker/Dockerfile
       context: .
     ports:
-      - "8000:8000"
+      - "8100:8100"
     command: scripts/web/startup.sh -m -l
     restart: on-failure
     env_file:
@@ -21,7 +20,6 @@ services:
       - battleship-network
 
   web_db:
-    container_name: web_db
     image: library/postgres:13.2
     environment:
       - POSTGRES_USER=postgres
@@ -29,7 +27,7 @@ services:
       - POSTGRES_DB=main_db
     restart: on-failure
     ports:
-      - "5432:5432"
+      - "9432:5432"
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "postgres", "-d", "main_db" ]
       interval: 5s
@@ -40,20 +38,18 @@ services:
       - battleship-network
 
   redis:
-    container_name: redis
     image: redis:6.2.4
     ports:
-      - "6379:6379"
+      - "9379:6379"
     networks:
       - battleship-network
 
   prometheus:
    image: prom/prometheus
-   container_name: prometheus
    command:
      - "--config.file=/etc/prometheus/prometheus_config.yml"
    ports:
-     - "9090:9090"
+     - "9190:9090"
    restart: unless-stopped
    depends_on:
      - web
@@ -65,9 +61,8 @@ services:
 
   grafana:
    image: grafana/grafana
-   container_name: grafana
    ports:
-     - "3000:3000"
+     - "9000:3000"
    restart: unless-stopped
    volumes:
      - ./grafana:/etc/grafana/provisioning/datasources
